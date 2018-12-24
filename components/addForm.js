@@ -1,24 +1,54 @@
 import React, { Component } from "react";
-import { View, Button, TextInput, StyleSheet } from "react-native";
+import { View, Button, StyleSheet } from "react-native";
+import TextField from "./forms/textField";
 
 export default class AddForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: "" };
+    this.state = { text: "", valid: false, errorMsg: "" };
   }
 
   _onPress = () => {
-    const item = { title: this.state.text };
-    this.props.onAddItem(item);
-    this.setState({ text: "" });
+    this._validate(() => {
+      if (this.state.valid) {
+        const item = { title: this.state.text };
+        this.props.onAddItem(item);
+        this.setState({ text: "" });
+      }
+    });
+  };
+
+  _onChangeText = text => {
+    this.setState({ text: text });
+  };
+
+  _validate = callback => {
+    if (this.state.text.length == 0) {
+      this.setState(
+        {
+          valid: false,
+          errorMsg: "Item is required"
+        },
+        callback
+      );
+    } else {
+      this.setState(
+        {
+          valid: true,
+          errorMsg: ""
+        },
+        callback
+      );
+    }
   };
 
   render() {
     return (
       <View>
-        <TextInput
-          style={styles.textInput}
-          onChangeText={text => this.setState({ text })}
+        <TextField
+          label="Item"
+          error={this.state.errorMsg}
+          onChangeText={this._onChangeText}
           value={this.state.text}
         />
         <View style={styles.buttonContainer}>
@@ -35,18 +65,8 @@ export default class AddForm extends Component {
 }
 
 const styles = StyleSheet.create({
-  textInput: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingLeft: 5,
-    paddingRight: 5,
-    borderTopWidth: 0,
-    borderLeftWidth: 0,
-    borderRightWidth: 0
-  },
   buttonContainer: {
-    marginTop: 20,
+    marginTop: 40,
     marginBottom: 20,
     marginLeft: "33%",
     marginLeft: "33%",
