@@ -10,7 +10,6 @@ export default class Trash extends PureComponent {
       [
         {
           text: "No",
-          onPress: () => console.log("no"),
           style: "cancel"
         },
         {
@@ -28,7 +27,7 @@ export default class Trash extends PureComponent {
           <Icon
             name="trash-o"
             size={20}
-            style={{ marginRight: 15, marginTop: 5, marginLeft: 5 }}
+            style={{ marginRight: 15, marginTop: 10, marginLeft: 5 }}
           />
         </View>
       </TouchableOpacity>

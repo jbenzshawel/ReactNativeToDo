@@ -14,6 +14,9 @@ export default class Item extends PureComponent {
           <Text style={{ fontSize: 25, textDecorationLine: textStyle }}>
             {this.props.title}
           </Text>
+          <Text style={{ fontSize: 15, color: "#666", fontStyle: "italic" }}>
+            {this.props.created}
+          </Text>
         </View>
       </TouchableOpacity>
     );

@@ -12,37 +12,39 @@ export default class ToDoList extends React.Component {
   }
 
   _refreshData() {
-    const db = this.props.storageService.getDb();
-    db.transaction(tx => {
-      tx.executeSql(`select * from items`, null, (_, { rows: { _array } }) => {
+    this.props.storageService.getItems().then(result => {
+      if (result.success) {
         this.setState({
-          data: _array
+          data: result.items
         });
-        console.log(_array);
-      });
+      }
     });
   }
 
   _keyExtractor = (item, index) => item.id.toString();
 
   _onPressItem = id => {
-    // updater functions are preferred for transactional updates
-    this.setState(state => {
-      // copy the map rather than modifying state.
-      const selected = new Map(state.selected);
-      selected.set(id, !selected.get(id)); // toggle
-      return { selected };
+    this.props.storageService.toggleDone(id).then(result => {
+      if (result.success) {
+        this._refreshData();
+      }
     });
   };
 
   _onConfirmDelete = id => {
-    this.props.storageService.deleteItem(id);
-    this._refreshData();
+    this.props.storageService.deleteItem(id).then(result => {
+      if (result.success) {
+        this._refreshData();
+      }
+    });
   };
 
   _onAddItem = item => {
-    this.props.storageService.addItem(item);
-    this._refreshData();
+    this.props.storageService.addItem(item).then(result => {
+      if (result.success) {
+        this._refreshData();
+      }
+    });
   };
 
   _renderItem = ({ item }) => (
@@ -50,14 +52,15 @@ export default class ToDoList extends React.Component {
       id={item.id}
       onPressItem={this._onPressItem}
       onConfirmDelete={this._onConfirmDelete}
-      selected={!!this.state.selected.get(item.id)}
+      selected={item.done === 1}
       title={item.title}
+      created={item.created}
     />
   );
 
   render() {
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <AddForm onAddItem={this._onAddItem} />
         <FlatList
           data={this.state.data}

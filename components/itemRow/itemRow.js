@@ -16,6 +16,7 @@ export default class ItemRow extends PureComponent {
           onPressItem={this.props.onPressItem}
           selected={this.props.selected}
           title={this.props.title}
+          created={this.props.created}
         />
       </View>
     );
